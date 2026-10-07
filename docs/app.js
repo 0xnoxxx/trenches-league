@@ -14,8 +14,11 @@ function store(){try{localStorage.setItem(KEY,JSON.stringify({lang:S.lang,me:ME,
 let LOCAL=[];
 
 /* counts: real from Supabase, otherwise a demo baseline */
+const IS_LOCAL=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 function demoCounts(){
-  const o={};CODES.forEach(c=>{const R=rng(c.charCodeAt(0)*97+c.charCodeAt(1)*13),base=[900,520,180,60,9][C[c].lg];o[c]=Math.round(base*(.5+R()))});
+  const o={};
+  if(!IS_LOCAL){LOCAL.forEach(r=>{o[r.country]=(o[r.country]||0)+1});return o}
+  CODES.forEach(c=>{const R=rng(c.charCodeAt(0)*97+c.charCodeAt(1)*13),base=[900,520,180,60,9][C[c].lg];o[c]=Math.round(base*(.5+R()))});
   o.TR=Math.max(o.TR,640);o.PL=Math.max(o.PL,655);LOCAL.forEach(r=>{o[r.country]=(o[r.country]||0)+1});return o;
 }
 async function loadCounts(){
